@@ -18,7 +18,22 @@ teams.franchid,franchname
 order by height asc
 --- "Eddie Gaedel WAS 43" and played on game with the B.Orioles
 ---
-/*#3*/
+/*#3 with dupl*/
+Select namefirst,namelast,schoolname as School,
+sum(salary) as salary
+From people
+INNER join collegeplaying
+ON people.playerid=collegeplaying.playerid
+INNER JOIN schools
+ON collegeplaying.schoolid=schools.schoolid
+INNER JOIN salaries
+ON people.playerid=salaries.playerid
+INNER JOIN appearances
+ON salaries.lgid=appearances.lgid
+WHERE schools.schoolid= 'vandy' 
+group by namefirst,namelast, School, salary
+order by salary desc
+----
 Select namefirst,namelast,schoolname as School,
 sum(salary) as salary
 From people
@@ -65,8 +80,44 @@ ON salaries.lgid=appearances.lgid
 WHERE schools.schoolid= 'vandy' 
 group by namefirst,namelast,School, salary
 order by school desc
----skipped 3
-/*#4*/				   
+---skipped 3 w/o dupl
+/*#4*/
+select playerid, pos as pos.o, pos as pos.i, pos as pos.b
+from fielding
+where pos.o = 'OF' AND pos = 'SS', '1B', '2B','3B'
+				   --
+Select 
+CASE WHEN pos= 'OF' then 'Outfield'	
+when pos= 'SS,1B,2B,3B' then 'Infield'	
+when pos= 'P' or pos= 'C' then 'Battery'	
+Else 'Null'	end as position, po, yearid
+from fielding
+inner join people
+on fielding.playerid=people.playerid				   
+where yearid= '2016' 				   
+group by fielding.pos,
+fielding.yearid, fielding.po
+			  ORDER BY sum(cast(fielding.pos)
+	---			   
+select
+sum(case pos when 'OF' THEN 1 ELSE 0 END) 
+"Outfield",
+sum(case pos when 'SS' THEN 1 WHEN '1B' THEN 1 WHEN'2B' THEN 1 WHEN'3B' THEN 1 else 0 end)			  
+"Infield",
+sum(case pos when 'P' then 1 WHEN 'C' then 1 else 0 end )			  
+"Battery", yearid as year
+			  from fielding
+where yearid= '2016'
+group by fielding.yearid
+order by sum(po)						   
+				   
+				   
+				   --
+				   
+
+			 
+				   
+				   
 
 
 
