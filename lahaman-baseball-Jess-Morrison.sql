@@ -223,7 +223,60 @@ end as golden_hour
 FROM teams
 INNER join teamsfranchises
 on teams.franchid=teamsfranchises.franchid
-where wswin ='N' and yearid >=1970
+where wswin ='Y' and yearid >=1970
 group by teamsfranchises.franchname, teams.w, teams.wswin,
 teams.yearid 			   
-ORDER BY W asc				   
+ORDER BY W asc
+--LA Dodgers				   
+/*#7c*/
+select yearid
+,sum(case when yearid between 1970 and 2016 
+and wswin='Y' then 1 else 0
+end)as golden_hour	   
+FROM teams
+INNER join teamsfranchises
+on teams.franchid=teamsfranchises.franchid
+where wswin ='Y' 
+group by teamsfranchises.franchname, teams.w, teams.wswin,
+teams.yearid,teams.g			   
+order by yearid		
+			 --
+--Explore 1				   
+select concat(namefirst, ' ',namelast),people.playerid,
+concat(birthmonth,' ',birthday,' ',birthyear),sb,height,debut,finalgame,
+ab,g			   
+from batting
+inner join people
+on batting.playerid=people.playerid
+where sb >20				   
+group by people.namefirst,people.namelast,people.birthmonth,
+people.birthyear,people.birthday,sb,people.debut,people.finalgame,
+batting.ab, people.playerid, batting.g, people.height
+order by sb desc
+limit 5				   
+---				   
+select concat(namefirst, ' ',namelast),people.playerid,
+concat(birthmonth,' ',birthday,' ',birthyear),sb, debut,finalgame,
+ab				   
+from batting
+inner join people
+on batting.playerid=people.playerid			   
+where sb>=100 
+order by ab asc	
+--avg amount of games a player was at bat
+select  avg(ab)
+from batting
+--
+select g
+from batting
+group by batting.g /1871-05-04 1875-05-03
+order by g desc
+---	
+select cast(debut as int),cast(finalgame as int)
+from people
+where debut >= '1871-05-04'	and finalgame <='1875-05-03'
+order by avg(finalgame-debut)
+				   --
+select namefirst,birthstate, deathcity
+from people
+where namefirst='Hugh'	and namelast='Nichol'			   
